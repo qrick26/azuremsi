@@ -11,6 +11,6 @@ This template creates a new Linux VM with a MSI and deploys the MSI extension to
 
 The solution parameter file currently uses a preview version of the azure cli in the docker image [simongdavies/azure-cli-msi](https://hub.docker.com/r/simongdavies/azure-cli-msi/)
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fsimongdavies%2Fazuremsi%2Fmaster%2Flinuxmsi%2Fazuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fqrick26%2Fazuremsi%2Fmaster%2Flinuxmsi%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
