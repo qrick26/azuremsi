@@ -372,6 +372,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('deploymentApiVersion')]",
       "dependsOn": ["Microsoft.Resources/deployments/creatingVault"],
+      "condition":false,
       "properties": {
         "mode": "Incremental",
         "templateLink": {
