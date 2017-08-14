@@ -342,7 +342,7 @@
           "tenantId": {
             "value": "[subscription().tenantId]"
           },
-          "secureObject": {
+          "secretsObject": {
             "value": {
               "secrets": [						
                 {
