@@ -125,7 +125,10 @@
     "adminPasswordpassword": "[parameters('adminPasswordorSSHKey')]",
     "containerName":"msi",
     "createVMUrl":"[concat(parameters('_artifactsLocation'), '/createVM.json', parameters('_artifactsLocationSasToken'))]",
-    "createRBACUrl":"[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/templates/setUpRBAC.json', parameters('_artifactsLocationSasToken'))]"
+    "createVaultUrl":"[concat(parameters('_artifactsLocation'), '/createVault.json', parameters('_artifactsLocationSasToken'))]",
+    "createRBACUrl":"[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/templates/setUpRBAC.json', parameters('_artifactsLocationSasToken'))]",
+    "createVaultRBACUrl":"[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/templates/setUpVaultRBAC.json', parameters('_artifactsLocationSasToken'))]",
+    "keyVaultName":"[concat('vault-',uniquestring(resourceGroup().id))]"
   },
   "resources": [
     {
@@ -319,6 +322,101 @@
           "protectedSettings": {
             "commandToExecute": "[concat('./install-and-run-cli-2.sh -i \"', parameters('azureCLI2DockerImage'),'\" -s \"', subscription().subscriptionId, '\" -a \"', variables('storageAccountName'), '\" -c \"', variables('containerName'), '\" -r \"', resourceGroup().Name,'\"')]"
           }
+      }
+    },
+    {
+      "name": "creatingVault",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('deploymentApiVersion')]",
+      "dependsOn": ["Microsoft.Resources/deployments/creatingRBAC"],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('createVaultUrl')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultName": {
+            "value": "[variables('keyVaultName')]"
+          },
+          "tenantId": {
+            "value": "[subscription().tenantId]"
+          },
+          "secureObject": {
+            "value": {
+              "secrets": [						
+                {
+                  "secretName": "secret1",
+                  "secretValue": "[parameters('adminPasswordorSSHKey')]"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "creatingVaultRBAC",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('deploymentApiVersion')]",
+      "dependsOn": ["Microsoft.Resources/deployments/creatingVault"],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('createVaultRBACUrl')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "principalId": {
+            "value": "[reference('Microsoft.Resources/deployments/creatingVM', variables('deploymentApiVersion')).outputs.principalId.value]"
+          },
+          "keyVaultName": {
+            "value": "[variables('keyVaultName')]"
+          }
+        }
+      }
+    },
+    {
+      "name": "updatingVault",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('deploymentApiVersion')]",
+      "dependsOn": ["Microsoft.Resources/deployments/creatingVaultRBAC"],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('createVaultUrl')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultName": {
+            "value": "[variables('keyVaultName')]"
+          },
+          "tenantId": {
+            "value": "[subscription().tenantId]"
+          },
+          "accessPolicies": {
+            "value": [
+              {
+                "tenantId": "[subscription().tenantId]",
+                "objectId": "[reference('Microsoft.Resources/deployments/creatingVM', variables('deploymentApiVersion')).outputs.principalId.value]",
+                "permissions": {
+                    "keys": ["all"],
+                    "secrets": ["all"]
+                }
+              }
+            ]
+          },
+          "secureObject": {
+            "value": {
+              "secrets": [						
+                {
+                  "secretName": "secret1",
+                  "secretValue": "[parameters('adminPasswordorSSHKey')]"
+                }
+              ]
+            }
+          }
+        }
       }
     }
   ],
