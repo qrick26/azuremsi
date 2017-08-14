@@ -341,6 +341,10 @@
           },
           "tenantId": {
             "value": "[subscription().tenantId]"
+          },          
+          "accessPolicies": {
+            "value": [
+            ]
           },
           "secretsObject": {
             "value": {
