@@ -306,7 +306,7 @@
       "apiVersion": "[variables('computeAPIVersion')]",
       "location": "[parameters('Location')]",
       "dependsOn": [
-        "Microsoft.Resources/deployments/creatingRBAC"
+        "Microsoft.Resources/deployments/creatingVault"
       ],
       "properties": {
           "publisher": "Microsoft.Azure.Extensions",
@@ -320,7 +320,7 @@
               ]
           },
           "protectedSettings": {
-            "commandToExecute": "[concat('./install-and-run-cli-2.sh -i \"', parameters('azureCLI2DockerImage'),'\" -s \"', subscription().subscriptionId, '\" -a \"', variables('storageAccountName'), '\" -c \"', variables('containerName'), '\" -r \"', resourceGroup().Name,'\"')]"
+            "commandToExecute": "[concat('./install-and-run-cli-2.sh -i \"', parameters('azureCLI2DockerImage'),'\" -s \"', subscription().subscriptionId, '\" -a \"', variables('storageAccountName'), '\" -c \"', variables('containerName'), '\" -r \"', resourceGroup().Name, '\" -v \"', variables('keyVaultName'),'\"')]"
           }
       }
     },
