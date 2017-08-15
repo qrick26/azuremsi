@@ -128,7 +128,8 @@
     "createVaultUrl":"[concat(parameters('_artifactsLocation'), '/createVault.json', parameters('_artifactsLocationSasToken'))]",
     "createRBACUrl":"[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/templates/setUpRBAC.json', parameters('_artifactsLocationSasToken'))]",
     "createVaultRBACUrl":"[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/templates/setUpVaultRBAC.json', parameters('_artifactsLocationSasToken'))]",
-    "keyVaultName":"[concat('vault-',uniquestring(resourceGroup().id))]"
+    "keyVaultName":"[concat('vault-',uniquestring(resourceGroup().id))]",
+    "sshKeyName":"[concat('ssh-key-',uniquestring(resourceGroup().id))]"
   },
   "resources": [
     {
@@ -320,7 +321,7 @@
               ]
           },
           "protectedSettings": {
-            "commandToExecute": "[concat('./install-and-run-cli-2.sh -i \"', parameters('azureCLI2DockerImage'),'\" -s \"', subscription().subscriptionId, '\" -a \"', variables('storageAccountName'), '\" -c \"', variables('containerName'), '\" -r \"', resourceGroup().Name, '\" -v \"', variables('keyVaultName'), '\" -w \"', variables('adminPasswordpassword'), '\"')]"
+            "commandToExecute": "[concat('./install-and-run-cli-2.sh -i \"', parameters('azureCLI2DockerImage'),'\" -s \"', subscription().subscriptionId, '\" -a \"', variables('storageAccountName'), '\" -c \"', variables('containerName'), '\" -r \"', resourceGroup().Name, '\" -v \"', variables('keyVaultName'), '\" -k \"', variables('sshKeyName'), '\"')]"
           }
       }
     },
@@ -338,6 +339,9 @@
         "parameters": {
           "keyVaultName": {
             "value": "[variables('keyVaultName')]"
+          },
+          "vaultSku":{
+            "value":"Premium"
           },
           "tenantId": {
             "value": "[subscription().tenantId]"

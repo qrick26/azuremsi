@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts ":i:s:a:c:r:v:w:" opt; do
+while getopts ":i:s:a:c:r:v:k:" opt; do
   case $opt in
     i) docker_image="$OPTARG"
     ;;
@@ -14,7 +14,7 @@ while getopts ":i:s:a:c:r:v:w:" opt; do
     ;;
     v) vault_name="$OPTARG"
     ;;
-    w) admin_password="$OPTARG"
+    k) key_name="$OPTARG"
     ;;
     p) port="$OPTARG"
     ;;
@@ -59,6 +59,6 @@ sudo docker run -v `pwd`:/scripts --network='host' \
 -e CONTAINER_NAME=${container_name} \
 -e RESOURCE_GROUP=${resource_group} \
 -e VAULT_NAME=${vault_name} \
--e ADMIN_PASSWORD=${admin_password} \
+-e KEY_NAME=${key_name} \
 -e PORT=${PORT} \
 ${docker_image} "./scripts/${script_file}" 
