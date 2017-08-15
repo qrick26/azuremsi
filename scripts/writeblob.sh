@@ -41,5 +41,5 @@ date > $file_name
 az storage blob upload --container-name ${CONTAINER_NAME} --account-name ${STORAGE_ACCOUNT} --account-key ${storage_account_key} --name ${blob_name} --file ${file_name}
 
 # write secret to vault
-az keyvault secret set --vault-name ${VAULT_NAME} --secret-name 'secret2' --value 'Pa$$w0rd'
+az keyvault secret set --vault-name ${VAULT_NAME} --name 'secret2' --value 'Pa$$w0rd'
 az keyvault secret list --vault-name ${VAULT_NAME} > '/tmp/rick.secrets'
