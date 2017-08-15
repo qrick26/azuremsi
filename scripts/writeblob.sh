@@ -12,7 +12,7 @@ if [ -z $PORT ]; then
     PORT=50342
 fi
 
-for var in STORAGE_ACCOUNT SUBSCRIPTION_ID RESOURCE_GROUP VAULT_NAME
+for var in STORAGE_ACCOUNT SUBSCRIPTION_ID RESOURCE_GROUP VAULT_NAME ADMIN_PASSWORD
 do
 
     if [ -z ${!var} ]; then
@@ -40,6 +40,8 @@ file_name=mktemp
 date > $file_name
 az storage blob upload --container-name ${CONTAINER_NAME} --account-name ${STORAGE_ACCOUNT} --account-key ${storage_account_key} --name ${blob_name} --file ${file_name}
 
-# write secret to vault
-az keyvault secret set --vault-name ${VAULT_NAME} --name 'secret2' --value 'Pa$$w0rd'
-az keyvault secret list --vault-name ${VAULT_NAME} > '/tmp/rick.secrets'
+# write secrets to vault
+az keyvault secret set --vault-name ${VAULT_NAME} --name 'secret1' --value 'P@$$w0rd_Rick'
+az keyvault secret set --vault-name ${VAULT_NAME} --name 'adminPassword' --value ${ADMIN_PASSWORD}
+az keyvault secret download --file '/tmp/rickvault.secret' --name 'adminPassword' --vault-name ${VAULT_NAME}
+az keyvault secret list --vault-name ${VAULT_NAME}

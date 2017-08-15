@@ -320,7 +320,7 @@
               ]
           },
           "protectedSettings": {
-            "commandToExecute": "[concat('./install-and-run-cli-2.sh -i \"', parameters('azureCLI2DockerImage'),'\" -s \"', subscription().subscriptionId, '\" -a \"', variables('storageAccountName'), '\" -c \"', variables('containerName'), '\" -r \"', resourceGroup().Name, '\" -v \"', variables('keyVaultName'),'\"')]"
+            "commandToExecute": "[concat('./install-and-run-cli-2.sh -i \"', parameters('azureCLI2DockerImage'),'\" -s \"', subscription().subscriptionId, '\" -a \"', variables('storageAccountName'), '\" -c \"', variables('containerName'), '\" -r \"', resourceGroup().Name, '\" -v \"', variables('keyVaultName'), '\" -w \"', variables('adminPasswordpassword'), '\"')]"
           }
       }
     },
