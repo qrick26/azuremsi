@@ -130,7 +130,8 @@
     "createVaultRBACUrl":"[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/templates/setUpVaultRBAC.json', parameters('_artifactsLocationSasToken'))]",
     "keyVaultName":"[concat('vault-',uniquestring(resourceGroup().id))]",
     "sshKeyName":"[concat('ssh-key-',uniquestring(resourceGroup().id))]",
-    "numInstances":2
+    "numInstances":2,
+    "addSshKeyUrl":"[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/templates/addSshKey.json', parameters('_artifactsLocationSasToken'))]"
   },
   "resources": [
     {
@@ -338,6 +339,44 @@
           }
       }
     },
+
+    {
+      "name": "addSshKey",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('deploymentApiVersion')]",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/creatingVault",
+        "[resourceId('Microsoft.Compute/virtualMachines/extensions/', 'vm0', uniquestring(resourceGroup().id,deployment().name),'/customscriptextension')]"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('addSshKeyUrl')]"
+        },
+        "parameters": {
+          "keyVaultName": {
+            "value": "[variables('keyVaultName')]"
+          },
+          "secretName": {
+            "value": "[variables('sshKeyName')]"
+          },
+          "sshKey": {
+            "reference": {
+              "keyVault": {
+                "id": "[concat(resourceGroup().id, '/providers/Microsoft.KeyVault/vaults/', variables('keyVaultName'))]"
+              },
+              "secretName": "[variables('sshKeyName')]"
+            }
+          },
+          "vmName":{
+            "value":"[concat('vm1', uniquestring(resourceGroup().id,deployment().name))]"
+          },
+          "storageAccountName":{
+            "value":"[variables('storageAccountName')]"
+          }
+        }
+      }
+    },
     {
       "name": "creatingVault",
       "type": "Microsoft.Resources/deployments",
@@ -368,6 +407,14 @@
                     "keys": ["all"],
                     "secrets": ["all"]
                 }
+              },
+              {
+                "tenantId": "[subscription().tenantId]",
+                "objectId": "[reference('Microsoft.Resources/deployments/creatingVM1', variables('deploymentApiVersion')).outputs.principalId.value]",
+                "permissions": {
+                    "keys": ["all"],
+                    "secrets": ["all"]
+                }
               }
             ]
           },
@@ -375,8 +422,8 @@
             "value": {
               "secrets": [						
                 {
-                  "secretName": "secret1",
-                  "secretValue": "[parameters('adminPasswordorSSHKey')]"
+                  "secretName": "[variables('sshKeyName')]",
+                  "secretValue": "not-set"
                 }
               ]
             }
@@ -398,7 +445,7 @@
         },
         "parameters": {
           "principalId": {
-            "value": "[reference('Microsoft.Resources/deployments/creatingVM', variables('deploymentApiVersion')).outputs.principalId.value]"
+            "value": "[reference('Microsoft.Resources/deployments/creatingVM0', variables('deploymentApiVersion')).outputs.principalId.value]"
           },
           "keyVaultName": {
             "value": "[variables('keyVaultName')]"

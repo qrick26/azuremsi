@@ -1,0 +1,96 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "sshKey": {
+      "type": "string",
+      "metadata": {
+        "description": "SSH key"
+      }
+    },
+    "keyVaultName":{
+      "type": "string",
+      "metadata": {
+        "description": "The name of the key vault"
+      }
+    },
+    "secretName":{
+      "type": "string",
+      "metadata": {
+        "description": "The name of the key vault secret"
+      }
+    },
+    "vmName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the VM to create"
+      }
+    },    
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The Location For the resources"
+      }, 
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+          "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+      },
+      "defaultValue": "https://raw.githubusercontent.com/qrick26/azuremsi/master/linuxmsi"
+    },
+    "_artifactsLocationSasToken": {
+        "type": "securestring",
+        "metadata": {
+            "description": "The sasToken required to access _artifactsLocation."
+        },
+        "defaultValue": ""
+    },
+    "azureCLI2DockerImage":{
+      "type": "string",
+      "metadata": {
+        "description": "The Docker image to run the azure CLI from"
+      }, 
+      "defaultValue": "azuresdk/azure-cli-python:latest"
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the storage account to create"
+      }
+    }
+  },
+  "variables": {
+      "computeAPIVersion":"2017-03-30"
+  },
+  "resources": [
+    {
+      "name": "[concat(parameters('vmName'),'/customscriptextension')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "apiVersion": "[variables('computeAPIVersion')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "Microsoft.Resources/deployments/creatingVault",
+        "[resourceId('Microsoft.Compute/virtualMachines/extensions/', 'vm0', uniquestring(resourceGroup().id,deployment().name),'/customscriptextension')]"
+      ],
+      "properties": {
+          "publisher": "Microsoft.Azure.Extensions",
+          "type": "CustomScript",
+          "typeHandlerVersion": "2.0",
+          "autoUpgradeMinorVersion": true,
+          "settings": {
+              "fileUris": [
+                  "[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/scripts/writekey.sh', parameters('_artifactsLocationSasToken'))]",
+                  "[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/scripts/install-and-run-cli-2.sh', parameters('_artifactsLocationSasToken'))]"
+              ]
+          },
+          "protectedSettings": {
+            "commandToExecute": "[concat('./install-and-run-cli-2.sh -i \"', parameters('azureCLI2DockerImage'),'\" -s \"', subscription().subscriptionId, '\" -a \"', parameters('storageAccountName'), '\" -c \"', 'msi', '\" -r \"', resourceGroup().Name, '\" -v \"', parameters('keyVaultName'), '\" -k \"', parameters('secretName'), '\" -u \"', parameters('sshKey'), '\"')]"
+          }
+      }
+    }
+  ],
+  "outputs": {
+  }
+}
