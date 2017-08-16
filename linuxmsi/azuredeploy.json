@@ -410,7 +410,7 @@
   "outputs": {
     "hostname": {
       "type": "string",
-      "value": "[reference(variables('publicIPAddressName')).dnsSettings.fqdn]"
+      "value": "[reference(concat('pip0', uniquestring(resourceGroup().id,deployment().name))).dnsSettings.fqdn]"
     },
      "principalId": {
       "type": "string",
