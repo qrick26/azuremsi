@@ -129,7 +129,8 @@
     "createRBACUrl":"[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/templates/setUpRBAC.json', parameters('_artifactsLocationSasToken'))]",
     "createVaultRBACUrl":"[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/templates/setUpVaultRBAC.json', parameters('_artifactsLocationSasToken'))]",
     "keyVaultName":"[concat('vault-',uniquestring(resourceGroup().id))]",
-    "sshKeyName":"[concat('ssh-key-',uniquestring(resourceGroup().id))]"
+    "sshKeyName":"[concat('ssh-key-',uniquestring(resourceGroup().id))]",
+    "numInstances":2
   },
   "resources": [
     {
@@ -146,13 +147,17 @@
     {
       "apiVersion": "[variables('networkAPIVersion')]",
       "type": "Microsoft.Network/publicIPAddresses",
-      "name": "[variables('publicIPAddressName')]",
+      "name": "[concat('pip',copyIndex(), uniquestring(resourceGroup().id,deployment().name))]",
       "location": "[parameters('Location')]",
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
-          "domainNameLabel": "[parameters('dnsLabelPrefix')]"
+          "domainNameLabel": "[concat(parameters('dnsLabelPrefix'), copyIndex())]"
         }
+      },
+      "copy": {
+        "name": "pipLoop",
+        "count": "[variables('numInstances')]"
       }
     },
     {
@@ -202,10 +207,10 @@
     {
       "apiVersion": "[variables('networkAPIVersion')]",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[variables('nicName')]",
+      "name": "[concat('nic',copyIndex(), uniquestring(resourceGroup().id,deployment().name))]",
       "location": "[parameters('Location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
+        ["pipLoop"],
         "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
       ],
       "properties": {
@@ -215,7 +220,7 @@
             "properties": {
               "privateIPAllocationMethod": "Dynamic",
               "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('publicIPAddressName'))]"
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat('pip',copyIndex(), uniquestring(resourceGroup().id,deployment().name)))]"
               },
               "subnet": {
                 "id": "[variables('subnetRef')]"
@@ -226,15 +231,19 @@
         "networkSecurityGroup": {
             "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('networkSecurityGroupName'))]"
         }
+      },
+      "copy": {
+        "name": "nicLoop",
+        "count": "[variables('numInstances')]"
       }
     },
     {
-      "name": "creatingVM",
+      "name": "[concat('creatingVM', copyIndex())]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('deploymentApiVersion')]",
       "dependsOn": [
          "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-         "[resourceId('Microsoft.Network/networkInterfaces/', variables('nicName'))]"
+         ["nicLoop"]
       ],
       "properties": {
         "mode": "Incremental",
@@ -255,10 +264,10 @@
               "value": "[parameters('vmSize')]"
           },
           "vmName": {
-              "value": "[variables('VMName')]"
+              "value": "[concat('vm', copyIndex(), uniquestring(resourceGroup().id,deployment().name))]"
           },
           "nicName": {
-              "value": "[variables('nicName')]"
+              "value": "[concat('nic', copyIndex(), uniquestring(resourceGroup().id,deployment().name))]"
           },
           "storageAccountName": {
               "value": "[variables('storageAccountName')]"
@@ -276,6 +285,10 @@
             "value": "[parameters('SKU')]"
           }
         }
+      },
+      "copy":{
+        "name": "vmLoop",
+        "count": "[variables('numInstances')]"
       }
     },
     {
@@ -283,7 +296,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('deploymentApiVersion')]",
       "dependsOn": [
-        "Microsoft.Resources/deployments/creatingVM"
+        "vmLoop"
       ],
       "properties": {
         "mode": "Incremental",
@@ -293,7 +306,7 @@
         },
         "parameters": {
           "principalId": {
-            "value": "[reference('Microsoft.Resources/deployments/creatingVM', variables('deploymentApiVersion')).outputs.principalId.value]"
+            "value": "[reference('Microsoft.Resources/deployments/creatingVM0', variables('deploymentApiVersion')).outputs.principalId.value]"
           },
           "storageAccountName": {
             "value": "[variables('storageAccountName')]"
@@ -302,7 +315,7 @@
       }
     },
     {
-      "name": "[concat(variables('vmName'),'/customscriptextension')]",
+      "name": "[concat('vm0', uniquestring(resourceGroup().id,deployment().name),'/customscriptextension')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "apiVersion": "[variables('computeAPIVersion')]",
       "location": "[parameters('Location')]",
@@ -350,7 +363,7 @@
             "value": [
               {
                 "tenantId": "[subscription().tenantId]",
-                "objectId": "[reference('Microsoft.Resources/deployments/creatingVM', variables('deploymentApiVersion')).outputs.principalId.value]",
+                "objectId": "[reference('Microsoft.Resources/deployments/creatingVM0', variables('deploymentApiVersion')).outputs.principalId.value]",
                 "permissions": {
                     "keys": ["all"],
                     "secrets": ["all"]
@@ -401,7 +414,7 @@
     },
      "principalId": {
       "type": "string",
-      "value": "[reference('Microsoft.Resources/deployments/creatingVM', variables('deploymentApiVersion')).outputs.principalId.value]"
+      "value": "[reference('Microsoft.Resources/deployments/creatingVM0', variables('deploymentApiVersion')).outputs.principalId.value]"
     }
   }
 }
