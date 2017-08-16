@@ -210,7 +210,7 @@
       "name": "[concat('nic',copyIndex(), uniquestring(resourceGroup().id,deployment().name))]",
       "location": "[parameters('Location')]",
       "dependsOn": [
-        ["pipLoop"],
+        "pipLoop",
         "[resourceId('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
       ],
       "properties": {
@@ -243,7 +243,7 @@
       "apiVersion": "[variables('deploymentApiVersion')]",
       "dependsOn": [
          "[resourceId('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
-         ["nicLoop"]
+         "nicLoop"
       ],
       "properties": {
         "mode": "Incremental",
