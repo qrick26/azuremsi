@@ -342,6 +342,7 @@
       "name": "addSshKey",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('deploymentApiVersion')]",
+      "condition":false,
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/', 'vm0', uniquestring(resourceGroup().id,deployment().name),'/extensions/gensshkey')]"
       ],
