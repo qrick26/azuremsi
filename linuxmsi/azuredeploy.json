@@ -344,7 +344,7 @@
       "apiVersion": "[variables('deploymentApiVersion')]",
       "dependsOn": [
         "Microsoft.Resources/deployments/creatingVault",
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions/', concat('vm0', uniquestring(resourceGroup().id,deployment().name),'/customscriptextension'))]"
+        "[concat('Microsoft.Compute/virtualMachines/', 'vm0', uniquestring(resourceGroup().id,deployment().name),'/extensions/customscriptextension')]"
       ],
       "properties": {
         "mode": "Incremental",
