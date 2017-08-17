@@ -127,7 +127,6 @@
     "createVMUrl":"[concat(parameters('_artifactsLocation'), '/createVM.json', parameters('_artifactsLocationSasToken'))]",
     "createVaultUrl":"[concat(parameters('_artifactsLocation'), '/createVault.json', parameters('_artifactsLocationSasToken'))]",
     "createRBACUrl":"[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/templates/setUpRBAC.json', parameters('_artifactsLocationSasToken'))]",
-    "createVaultRBACUrl":"[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/templates/setUpVaultRBAC.json', parameters('_artifactsLocationSasToken'))]",
     "keyVaultName":"[concat('vault-',uniquestring(resourceGroup().id))]",
     "sshKeyName":"[concat('ssh-key-',uniquestring(resourceGroup().id))]",
     "numInstances":2,
@@ -427,28 +426,6 @@
                 }
               ]
             }
-          }
-        }
-      }
-    },
-    {
-      "name": "creatingVaultRBAC",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "[variables('deploymentApiVersion')]",
-      "dependsOn": ["Microsoft.Resources/deployments/creatingVault"],
-      "condition":false,
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('createVaultRBACUrl')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "principalId": {
-            "value": "[reference('Microsoft.Resources/deployments/creatingVM0', variables('deploymentApiVersion')).outputs.principalId.value]"
-          },
-          "keyVaultName": {
-            "value": "[variables('keyVaultName')]"
           }
         }
       }
