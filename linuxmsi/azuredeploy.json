@@ -343,6 +343,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('deploymentApiVersion')]",
       "dependsOn": [
+        "[variables('keyVaultName')]",
+        "[variables('sshKeyName')]",
         "[concat('Microsoft.Compute/virtualMachines/', 'vm0', uniquestring(resourceGroup().id,deployment().name),'/extensions/gensshkey')]"
       ],
       "properties": {
