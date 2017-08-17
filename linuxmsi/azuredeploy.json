@@ -360,7 +360,7 @@
           "sshKey": {
             "reference": {
               "keyVault": {
-                "id": "[concat('/subscriptions/', subscription().subscriptionId, resourceGroup().id, '/providers/Microsoft.KeyVault/vaults/', variables('keyVaultName'))]"
+                "id": "[concat(resourceGroup().id, '/providers/Microsoft.KeyVault/vaults/', variables('keyVaultName'))]"
               },
               "secretName": "[variables('sshKeyName')]"
             }
