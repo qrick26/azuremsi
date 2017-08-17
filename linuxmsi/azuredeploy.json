@@ -130,7 +130,7 @@
     "keyVaultName":"[concat('vault-',uniquestring(resourceGroup().id))]",
     "sshKeyName":"[concat('ssh-key-',uniquestring(resourceGroup().id))]",
     "numInstances":2,
-    "addSshKeyUrl":"[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/templates/addSshKey.json', parameters('_artifactsLocationSasToken'))]"
+    "addSshKeyUrl":"[concat(parameters('_artifactsLocation'), '/addSshKey.json', parameters('_artifactsLocationSasToken'))]"
   },
   "resources": [
     {
