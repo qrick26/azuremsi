@@ -338,14 +338,13 @@
           }
       }
     },
-
     {
       "name": "addSshKey",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('deploymentApiVersion')]",
       "dependsOn": [
         "Microsoft.Resources/deployments/creatingVault",
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions/', 'vm0', uniquestring(resourceGroup().id,deployment().name),'/customscriptextension')]"
+        "[resourceId('Microsoft.Compute/virtualMachines/extensions/', concat('vm0', uniquestring(resourceGroup().id,deployment().name),'/customscriptextension'))]"
       ],
       "properties": {
         "mode": "Incremental",
