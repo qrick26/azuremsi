@@ -315,7 +315,7 @@
       }
     },
     {
-      "name": "[concat('vm0', uniquestring(resourceGroup().id,deployment().name),'/customscriptextension')]",
+      "name": "[concat('vm0', uniquestring(resourceGroup().id,deployment().name),'/gensshkey')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "apiVersion": "[variables('computeAPIVersion')]",
       "location": "[parameters('Location')]",
@@ -343,8 +343,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('deploymentApiVersion')]",
       "dependsOn": [
-        "Microsoft.Resources/deployments/creatingVault",
-        "[concat('Microsoft.Compute/virtualMachines/', 'vm0', uniquestring(resourceGroup().id,deployment().name),'/extensions/customscriptextension')]"
+        "[concat('Microsoft.Compute/virtualMachines/', 'vm0', uniquestring(resourceGroup().id,deployment().name),'/extensions/gensshkey')]"
       ],
       "properties": {
         "mode": "Incremental",

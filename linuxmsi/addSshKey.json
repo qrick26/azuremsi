@@ -66,13 +66,12 @@
   },
   "resources": [
     {
-      "name": "[concat(parameters('vmName'),'/customscriptextension')]",
+      "name": "[concat(parameters('vmName'),'/addsshkey')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "apiVersion": "[variables('computeAPIVersion')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "Microsoft.Resources/deployments/creatingVault",
-        "[resourceId('Microsoft.Compute/virtualMachines/extensions/', 'vm0', uniquestring(resourceGroup().id,deployment().name),'/customscriptextension')]"
+        "Microsoft.Resources/deployments/creatingVault"
       ],
       "properties": {
           "publisher": "Microsoft.Azure.Extensions",
