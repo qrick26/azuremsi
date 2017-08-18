@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts ":i:s:a:c:r:v:k:u:" opt; do
+while getopts ":i:s:a:c:r:v:k:u:p:t:" opt; do
   case $opt in
     i) docker_image="$OPTARG"
     ;;
