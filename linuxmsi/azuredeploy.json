@@ -360,7 +360,7 @@
           "sshKey": {
             "reference": {
               "keyVault": {
-                "id": "[concat(resourceGroup().id, '/providers/Microsoft.KeyVault/vaults/', variables('keyVaultName'))]"
+                "id": "[reference('Microsoft.Resources/deployments/creatingVault', variables('deploymentApiVersion')).outputs.vaultId]"
               },
               "secretName": "[variables('sshKeyName')]"
             }
