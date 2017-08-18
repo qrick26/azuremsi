@@ -360,7 +360,7 @@
           "sshKey": {
             "reference": {
               "keyVault": {
-                "id": "[reference('Microsoft.Resources/deployments/creatingVault', variables('deploymentApiVersion')).outputs.vaultId]"
+                "id": "[reference('Microsoft.Resources/deployments/creatingVault', variables('deploymentApiVersion')).outputs.vaultId.value]"
               },
               "secretName": "[variables('sshKeyName')]"
             }
