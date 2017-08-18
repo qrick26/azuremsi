@@ -34,7 +34,7 @@
       },
       "enabledForDeployment": {
           "type": "bool",
-          "defaultValue": false,
+          "defaultValue": true,
           "metadata": {
               "description": "Specifies if the vault is enabled for VM or Service Fabric deployment"
           }
