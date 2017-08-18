@@ -70,9 +70,6 @@
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "apiVersion": "[variables('computeAPIVersion')]",
       "location": "[parameters('location')]",
-      "dependsOn": [
-        "Microsoft.Resources/deployments/creatingVault"
-      ],
       "properties": {
           "publisher": "Microsoft.Azure.Extensions",
           "type": "CustomScript",
