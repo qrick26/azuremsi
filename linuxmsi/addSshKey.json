@@ -8,7 +8,7 @@
         "description": "SSH key"
       }
     },
-    "keyVaultName":{
+    "vaultName":{
       "type": "string",
       "metadata": {
         "description": "The name of the key vault"
@@ -85,7 +85,7 @@
               ]
           },
           "protectedSettings": {
-            "commandToExecute": "[concat('./install-and-run-cli-2.sh -i \"', parameters('azureCLI2DockerImage'),'\" -s \"', subscription().subscriptionId, '\" -a \"', parameters('storageAccountName'), '\" -c \"', 'msi', '\" -r \"', resourceGroup().Name, '\" -v \"', parameters('keyVaultName'), '\" -k \"', parameters('secretName'), '\" -u \"', parameters('sshKey'), '\"')]"
+            "commandToExecute": "[concat('./install-and-run-cli-2.sh -i \"', parameters('azureCLI2DockerImage'),'\" -s \"', subscription().subscriptionId, '\" -a \"', parameters('storageAccountName'), '\" -c \"', 'msi', '\" -r \"', resourceGroup().Name, '\" -v \"', parameters('vaultName'), '\" -k \"', parameters('secretName'), '\" -u \"', parameters('sshKey'), '\"')]"
           }
       }
     }

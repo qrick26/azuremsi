@@ -87,6 +87,20 @@
         "description": "The VM SKU"
       },
       "defaultValue": "16.04-LTS"
+    },
+    "keyVaultName":{
+      "type": "string",
+      "metadata": {
+        "description":"Name of the key vault"
+      },
+      "defaultValue": "rtw-key-vault"
+    },
+    "sshKeyName":{
+      "type": "string",
+      "metadata": {
+        "description":"Name of the ssh key"
+      },
+     "defaultValue": "rtw-ssh-key-name"
     }
   },
   "variables": {
@@ -127,8 +141,6 @@
     "createVMUrl":"[concat(parameters('_artifactsLocation'), '/createVM.json', parameters('_artifactsLocationSasToken'))]",
     "createVaultUrl":"[concat(parameters('_artifactsLocation'), '/createVault.json', parameters('_artifactsLocationSasToken'))]",
     "createRBACUrl":"[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/templates/setUpRBAC.json', parameters('_artifactsLocationSasToken'))]",
-    "keyVaultName":"[concat('vault-',uniquestring(resourceGroup().id))]",
-    "sshKeyName":"[concat('ssh-key-',uniquestring(resourceGroup().id))]",
     "numInstances":2,
     "addSshKeyUrl":"[concat(parameters('_artifactsLocation'), '/addSshKey.json', parameters('_artifactsLocationSasToken'))]"
   },
@@ -334,7 +346,7 @@
               ]
           },
           "protectedSettings": {
-            "commandToExecute": "[concat('./install-and-run-cli-2.sh -i \"', parameters('azureCLI2DockerImage'),'\" -s \"', subscription().subscriptionId, '\" -a \"', variables('storageAccountName'), '\" -c \"', variables('containerName'), '\" -r \"', resourceGroup().Name, '\" -v \"', variables('keyVaultName'), '\" -k \"', variables('sshKeyName'), '\"')]"
+            "commandToExecute": "[concat('./install-and-run-cli-2.sh -i \"', parameters('azureCLI2DockerImage'),'\" -s \"', subscription().subscriptionId, '\" -a \"', variables('storageAccountName'), '\" -c \"', variables('containerName'), '\" -r \"', resourceGroup().Name, '\" -v \"', parameters('keyVaultName'), '\" -k \"', parameters('sshKeyName'), '\"')]"
           }
       }
     },
@@ -351,18 +363,18 @@
           "uri": "[variables('addSshKeyUrl')]"
         },
         "parameters": {
-          "keyVaultName": {
-            "value": "[variables('keyVaultName')]"
+          "vaultName": {
+            "value": "[parameters('keyVaultName')]"
           },
           "secretName": {
-            "value": "[variables('sshKeyName')]"
+            "value": "[parameters('sshKeyName')]"
           },
           "sshKey": {
             "reference": {
               "keyVault": {
-                "id": "[concat(resourceGroup().id, '/providers/Microsoft.KeyVault/vaults/', variables('keyVaultName'))]"
+                "id": "[concat(resourceGroup().id, '/providers/Microsoft.KeyVault/vaults/', parameters('keyVaultName'))]"
               },
-              "secretName": "[variables('sshKeyName')]"
+              "secretName": "[parameters('sshKeyName')]"
             }
           },
           "vmName":{
@@ -387,7 +399,7 @@
         },
         "parameters": {
           "keyVaultName": {
-            "value": "[variables('keyVaultName')]"
+            "value": "[parameters('keyVaultName')]"
           },
           "vaultSku":{
             "value":"Premium"
@@ -419,7 +431,7 @@
             "value": {
               "secrets": [						
                 {
-                  "secretName": "[variables('sshKeyName')]",
+                  "secretName": "[parameters('sshKeyName')]",
                   "secretValue": "not-set"
                 }
               ]
