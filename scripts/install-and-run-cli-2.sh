@@ -63,5 +63,5 @@ sudo docker run -v `pwd`:/scripts --network='host' \
 -e VAULT_NAME=${vault_name} \
 -e KEY_NAME=${key_name} \
 -e KEY_VALUE=${key_value} \
--e PORT=${PORT} \
+-e PORT=${port} \
 ${docker_image} "./scripts/${script_file}" 
