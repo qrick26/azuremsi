@@ -82,7 +82,7 @@
               ]
           },
           "protectedSettings": {
-            "commandToExecute": "[concat('./install-and-run-cli-2.sh -i \"', parameters('azureCLI2DockerImage'),'\" -s \"', subscription().subscriptionId, '\" -a \"', parameters('storageAccountName'), '\" -c \"', 'msi', '\" -r \"', resourceGroup().Name, '\" -v \"', parameters('keyVaultName'), '\" -k \"', parameters('secretName'), '\" -u \"', parameters('sshKey'), '\" -t \"', 'writekey.sh', '\"')]"
+            "commandToExecute": "[concat('./install-and-run-cli-2.sh -i \"', parameters('azureCLI2DockerImage'),'\" -s \"', subscription().subscriptionId, '\" -a \"', parameters('storageAccountName'), '\" -c msi \"', '\" -r \"', resourceGroup().Name, '\" -v \"', parameters('keyVaultName'), '\" -k \"', parameters('secretName'), '\" -u \"', parameters('sshKey'), '\" -t writekey.sh \"', '\"')]"
           }
       }
     }
