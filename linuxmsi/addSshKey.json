@@ -62,7 +62,9 @@
     }
   },
   "variables": {
-      "computeAPIVersion":"2017-03-30"
+      "computeAPIVersion":"2017-03-30",
+      "containerName":"msi",
+      "scriptName":"writekey.sh"
   },
   "resources": [
     {
@@ -82,7 +84,7 @@
               ]
           },
           "protectedSettings": {
-            "commandToExecute": "[concat('./install-and-run-cli-2.sh -i \"', parameters('azureCLI2DockerImage'),'\" -s \"', subscription().subscriptionId, '\" -a \"', parameters('storageAccountName'), '\" -c msi \"', '\" -r \"', resourceGroup().Name, '\" -v \"', parameters('keyVaultName'), '\" -k \"', parameters('secretName'), '\" -u \"', parameters('sshKey'), '\" -t writekey.sh \"', '\"')]"
+            "commandToExecute": "[concat('./install-and-run-cli-2.sh -i \"', parameters('azureCLI2DockerImage'),'\" -s \"', subscription().subscriptionId, '\" -a \"', parameters('storageAccountName'), '\" -c \"', variables('containerName'), '\" -r \"', resourceGroup().Name, '\" -v \"', parameters('keyVaultName'), '\" -k \"', parameters('secretName'), '\" -u \"', parameters('sshKey'), '\" -t \"', variables('scriptName'), '\"')]"
           }
       }
     }
