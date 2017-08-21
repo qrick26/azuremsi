@@ -1,6 +1,7 @@
 #!/bin/bash
-echo "Parameters"
-echo $@
+echo >&2
+echo "Parameters" >&2
+echo $@ >&2
 
 while getopts ":i:s:a:c:r:v:k:u:p:t:" opt; do
   case $opt in
@@ -28,6 +29,13 @@ while getopts ":i:s:a:c:r:v:k:u:p:t:" opt; do
     ;;
   esac
 done
+
+echo >&2
+echo "KEY VALUE" >&2
+echo ${key_value} >&2
+echo >&2
+echo "SCRIPT FILE" >&2
+echo ${script_file} >&2
 
 if [ -z $docker_image ]; then
     docker_image="azuresdk/azure-cli-python:latest"
