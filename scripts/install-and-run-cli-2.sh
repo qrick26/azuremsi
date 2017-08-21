@@ -1,4 +1,6 @@
 #!/bin/bash
+echo "Parameters"
+echo $@
 
 while getopts ":i:s:a:c:r:v:k:u:p:t:" opt; do
   case $opt in
