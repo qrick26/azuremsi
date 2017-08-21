@@ -58,7 +58,6 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 sudo apt-get -y update
 sudo apt-get -y install docker-ce
-
 docker_env=(-e "SUBSCRIPTION_ID=${subscription_id}")
 docker_env+=("STORAGE_ACCOUNT=${storage_account}")
 docker_env+=("CONTAINER_NAME=${container_name}")
@@ -67,5 +66,5 @@ docker_env+=("VAULT_NAME=${vault_name}")
 docker_env+=("KEY_NAME=${key_name}")
 docker_env+=("KEY_VALUE=${key_value}")
 docker_env+=("PORT=${port}")
-
-sudo docker run -v `pwd`:/scripts --network='host' "${docker_env[@]}" ${docker_image} "./scripts/${script_file}" 
+sudo docker run -v `pwd`:/scripts --network='host' "${docker_env[@]}" ${docker_image} "./scripts/${script_file}"
+ 
