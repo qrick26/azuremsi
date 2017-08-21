@@ -30,14 +30,6 @@ while getopts ":i:s:a:c:r:v:k:u:p:t:" opt; do
   esac
 done
 
-echo >&2
-echo "KEY VALUE" >&2
-echo ${key_value} >&2
-echo >&2
-echo "SCRIPT FILE" >&2
-echo ${script_file} >&2
-echo >&2
-
 if [ -z $docker_image ]; then
     docker_image="azuresdk/azure-cli-python:latest"
 fi
@@ -66,13 +58,14 @@ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 sudo apt-get -y update
 sudo apt-get -y install docker-ce
-sudo docker run -v `pwd`:/scripts --network='host' \
--e SUBSCRIPTION_ID=${subscription_id} \
--e STORAGE_ACCOUNT=${storage_account} \
--e CONTAINER_NAME=${container_name} \
--e RESOURCE_GROUP=${resource_group} \
--e VAULT_NAME=${vault_name} \
--e KEY_NAME=${key_name} \
--e KEY_VALUE=\'${key_value}\' \
--e PORT=${port} \
-${docker_image} "./scripts/${script_file}" 
+
+docker_env=(-e "SUBSCRIPTION_ID=${subscription_id}")
+docker_env+=("STORAGE_ACCOUNT=${storage_account}")
+docker_env+=("CONTAINER_NAME=${container_name}")
+docker_env+=("RESOURCE_GROUP=${resource_group}")
+docker_env+=("VAULT_NAME=${vault_name}")
+docker_env+=("KEY_NAME=${key_name}")
+docker_env+=("KEY_VALUE=${key_value}")
+docker_env+=("PORT=${port}")
+
+sudo docker run -v `pwd`:/scripts --network='host' "${docker_env[@]}" ${docker_image} "./scripts/${script_file}" 
