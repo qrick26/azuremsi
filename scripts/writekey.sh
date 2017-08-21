@@ -1,5 +1,10 @@
 #!/bin/bash
 
+echo >&2
+echo "Parameters" >&2
+echo $@ >&2
+
+
 # The default port for the MSI extension is 50342
 
 if [ -z $PORT ]; then

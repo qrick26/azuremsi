@@ -68,7 +68,7 @@ echo RESOURCE_GROUP=${resource_group} >> $DOCKER_ENV
 echo RESOURCE_GROUP=${resource_group} >> $DOCKER_ENV
 echo VAULT_NAME=${vault_name} >> $DOCKER_ENV
 echo KEY_NAME=${key_name} >> $DOCKER_ENV
-echo KEY_VALUE=${key_value} >> $DOCKER_ENV
+echo KEY_VALUE=\'${key_value}\' >> $DOCKER_ENV
 echo PORT=${port} >> $DOCKER_ENV
 cat ${DOCKER_ENV}
 sudo docker run -v `pwd`:/scripts --network='host' --env-file=${DOCKER_ENV} ${docker_image} "./scripts/${script_file}"
