@@ -59,17 +59,17 @@ sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubun
 sudo apt-get -y update
 sudo apt-get -y install docker-ce
 
-sudo DOCKER_ENV=$(mktemp run-docker-env.XXXXXXX)
-sudo echo Using env file: $DOCKER_ENV
-sudo echo SUBSCRIPTION_ID=${subscription_id} > $DOCKER_ENV
-sudo echo STORAGE_ACCOUNT=${storage_account} >> $DOCKER_ENV
-sudo echo CONTAINER_NAME=${container_name} >> $DOCKER_ENV
-sudo echo RESOURCE_GROUP=${resource_group} >> $DOCKER_ENV
-sudo echo RESOURCE_GROUP=${resource_group} >> $DOCKER_ENV
-sudo echo VAULT_NAME=${vault_name} >> $DOCKER_ENV
-sudo echo KEY_NAME=${key_name} >> $DOCKER_ENV
-sudo echo KEY_VALUE=${key_value} >> $DOCKER_ENV
-sudo echo PORT=${port} >> $DOCKER_ENV
-sudo cat ${DOCKER_ENV}
+DOCKER_ENV=$(mktemp run-docker-env.XXXXXXX)
+echo Using env file: $DOCKER_ENV
+echo SUBSCRIPTION_ID=${subscription_id} > $DOCKER_ENV
+echo STORAGE_ACCOUNT=${storage_account} >> $DOCKER_ENV
+echo CONTAINER_NAME=${container_name} >> $DOCKER_ENV
+echo RESOURCE_GROUP=${resource_group} >> $DOCKER_ENV
+echo RESOURCE_GROUP=${resource_group} >> $DOCKER_ENV
+echo VAULT_NAME=${vault_name} >> $DOCKER_ENV
+echo KEY_NAME=${key_name} >> $DOCKER_ENV
+echo KEY_VALUE=${key_value} >> $DOCKER_ENV
+echo PORT=${port} >> $DOCKER_ENV
+cat ${DOCKER_ENV}
 sudo docker run -v `pwd`:/scripts --network='host' --env-file=${DOCKER_ENV} ${docker_image} "./scripts/${script_file}"
-sudo rm $DOCKER_ENV 
+rm $DOCKER_ENV 
