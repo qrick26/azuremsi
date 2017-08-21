@@ -36,6 +36,7 @@ echo ${key_value} >&2
 echo >&2
 echo "SCRIPT FILE" >&2
 echo ${script_file} >&2
+echo >&2
 
 if [ -z $docker_image ]; then
     docker_image="azuresdk/azure-cli-python:latest"
@@ -72,6 +73,6 @@ sudo docker run -v `pwd`:/scripts --network='host' \
 -e RESOURCE_GROUP=${resource_group} \
 -e VAULT_NAME=${vault_name} \
 -e KEY_NAME=${key_name} \
--e KEY_VALUE=${key_value} \
+-e KEY_VALUE=\'${key_value}\' \
 -e PORT=${port} \
 ${docker_image} "./scripts/${script_file}" 
