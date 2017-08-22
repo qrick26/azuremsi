@@ -15,12 +15,7 @@ fi
 
 for var in SUBSCRIPTION_ID RESOURCE_GROUP VAULT_NAME KEY_NAME KEY_VALUE
 do
-
-    if [ -z ${!var} ]; then
-        echo "Argument $var is not set" >&2
-        exit 1
-    fi
-
+    : "${!var:?"Argument $var is not set or null/empty"}"
 done
 
 # login using msi 
