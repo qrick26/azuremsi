@@ -4,6 +4,8 @@ echo >&2
 echo "Parameters" >&2
 echo $@ >&2
 
+printenv
+
 
 # The default port for the MSI extension is 50342
 
