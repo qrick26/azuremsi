@@ -37,12 +37,7 @@ fi
 
 for var in storage_account subscription_id resource_group
 do
-
-    if [ -z ${!var} ]; then
-        echo "Argument $var is not set" >&2
-        exit 1
-    fi 
-
+    : "${!var:?"Argument $var is not set or null/empty"}"
 done
 
 # Install Docker and then run docker image with cli
