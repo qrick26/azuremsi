@@ -1,7 +1,5 @@
 #!/bin/bash
 
-printenv
-
 if [ -z $CONTAINER_NAME ]; then
     CONTAINER_NAME="msi"
 else
@@ -16,12 +14,7 @@ fi
 
 for var in STORAGE_ACCOUNT SUBSCRIPTION_ID RESOURCE_GROUP VAULT_NAME KEY_NAME
 do
-
-    if [ -z ${!var} ]; then
-        echo "Argument $var is not set" >&2
-        exit 1
-    fi
-
+    : "${!var:?"Argument $var is not set or null/empty"}"
 done
 
 # login using msi 
