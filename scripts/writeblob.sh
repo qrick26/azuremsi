@@ -39,3 +39,7 @@ az storage blob upload --container-name ${CONTAINER_NAME} --account-name ${STORA
 rm -f ~/.ssh/id_rsa; ssh-keygen -t rsa -q -N "" -f ~/.ssh/id_rsa
 # write key as a secret to vault
 az keyvault secret set --vault-name ${VAULT_NAME} --name ${KEY_NAME} --value "${KEY_VALUE}"
+
+# DEBUG -- dump results
+#az keyvault secret show --vault-name ${VAULT_NAME} --name ${KEY_NAME}
+#az keyvault secret download --file '~/rickvault.secret' --vault-name ${VAULT_NAME} --name ${KEY_NAME} 
