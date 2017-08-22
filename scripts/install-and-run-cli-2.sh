@@ -79,4 +79,10 @@ docker_env+=("-e VAULT_NAME=${vault_name}")
 docker_env+=("-e KEY_NAME=${key_name}")
 docker_env+=("-e KEY_VALUE=${key_value}")
 docker_env+=("-e PORT=${port}")
+
+echo
+echo "docker_env"
+echo "${docker_env[@]}"
+echo
+
 sudo docker run -v `pwd`:/scripts --network='host' "${docker_env[@]}" ${docker_image} "./scripts/${script_file}"

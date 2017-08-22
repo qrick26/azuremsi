@@ -1,5 +1,7 @@
 #!/bin/bash
 
+printenv
+
 if [ -z $CONTAINER_NAME ]; then
     CONTAINER_NAME="msi"
 else
