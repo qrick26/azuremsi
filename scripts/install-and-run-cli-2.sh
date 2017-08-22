@@ -35,7 +35,14 @@ if [ -z $script_file ]; then
     script_file="writeblob.sh"
 fi
 
-for var in storage_account subscription_id resource_group
+if [ -z $key_value ]; then
+    # generate ssh key
+    sudo rm -f ~/.ssh/id_rsa
+    sudo ssh-keygen -t rsa -q -N "" -f ~/.ssh/id_rsa
+    key_value=$(<~/.ssh/id_rsa.pub)
+fi
+
+for var in storage_account subscription_id resource_group vault_name key_name key_value
 do
     : "${!var:?"Argument $var is not set or null/empty"}"
 done
