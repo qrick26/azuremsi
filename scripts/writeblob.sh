@@ -35,8 +35,6 @@ file_name=mktemp
 date > $file_name
 az storage blob upload --container-name ${CONTAINER_NAME} --account-name ${STORAGE_ACCOUNT} --account-key ${storage_account_key} --name ${blob_name} --file ${file_name}
 
-# generate ssh key
-rm -f ~/.ssh/id_rsa; ssh-keygen -t rsa -q -N "" -f ~/.ssh/id_rsa
 # write key as a secret to vault
 az keyvault secret set --vault-name ${VAULT_NAME} --name ${KEY_NAME} --value "${KEY_VALUE}"
 

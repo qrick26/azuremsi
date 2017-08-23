@@ -1,0 +1,60 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "vmName": {
+        "type": "string",
+        "metadata": {
+          "description": "The name of the VM to run the extension"
+        }
+      },    
+      "location": {
+        "type": "string",
+        "metadata": {
+          "description": "The Location For the resources"
+        }, 
+        "defaultValue": "[resourceGroup().location]"
+      },
+      "_artifactsLocation": {
+        "type": "string",
+        "metadata": {
+            "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+        },
+        "defaultValue": "https://raw.githubusercontent.com/qrick26/azuremsi/master/linuxmsi"
+      },
+      "_artifactsLocationSasToken": {
+          "type": "securestring",
+          "metadata": {
+              "description": "The sasToken required to access _artifactsLocation."
+          },
+          "defaultValue": ""
+      }
+    },
+    "variables": {
+        "computeAPIVersion":"2017-03-30"
+    },
+    "resources": [
+        {
+          "type": "Microsoft.Compute/virtualMachines/extensions",
+          "name": "[concat(parameters('vmName'),'/installAzCli')]",
+          "apiVersion": "[variables('computeAPIVersion')]",
+          "location": "[parameters('Location')]",
+          "properties": {
+              "publisher": "Microsoft.Azure.Extensions",
+              "type": "CustomScript",
+              "typeHandlerVersion": "2.0",
+              "autoUpgradeMinorVersion": true,
+              "settings": {
+                  "fileUris": [
+                      "[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/scripts/install-az-cli.sh', parameters('_artifactsLocationSasToken'))]"
+                  ]
+              },
+              "protectedSettings": {
+                "commandToExecute": "./install-az-cli.sh"
+              }
+          }
+        }    ],
+    "outputs": {
+    }
+  }
+  

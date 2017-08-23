@@ -150,29 +150,6 @@
             },
             "protectedSettings": {}
         }
-    },
-    {
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('vmName'),'/installAzCli')]",
-      "apiVersion": "[variables('computeAPIVersion')]",
-      "location": "[parameters('Location')]",
-      "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
-      ],
-      "properties": {
-          "publisher": "Microsoft.Azure.Extensions",
-          "type": "CustomScript",
-          "typeHandlerVersion": "2.0",
-          "autoUpgradeMinorVersion": true,
-          "settings": {
-              "fileUris": [
-                  "[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/scripts/install-az-cli.sh', parameters('_artifactsLocationSasToken'))]"
-              ]
-          },
-          "protectedSettings": {
-            "commandToExecute": "./install-az-cli.sh"
-          }
-      }
     }
   ],
   "outputs": {

@@ -130,6 +130,7 @@
     "keyVaultName":"[concat('vault-',uniquestring(resourceGroup().id))]",
     "sshKeyName":"[concat('ssh-key-',uniquestring(resourceGroup().id))]",
     "numInstances":2,
+    "installAzCliUrl":"[concat(parameters('_artifactsLocation'), '/installAzCli.json', parameters('_artifactsLocationSasToken'))]",
     "addSshKeyUrl":"[concat(parameters('_artifactsLocation'), '/addSshKey.json', parameters('_artifactsLocationSasToken'))]"
   },
   "resources": [
@@ -301,9 +302,7 @@
       "name": "creatingRBAC",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('deploymentApiVersion')]",
-      "dependsOn": [
-        "vmLoop"
-      ],
+      "dependsOn": ["Microsoft.Resources/deployments/installAzCli"],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -433,7 +432,29 @@
           }
         }
       }
-    }
+    },
+    {
+      "name": "installAzCli",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('deploymentApiVersion')]",
+      "dependsOn": ["vmLoop"],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[variables('installAzCliUrl')]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "vmName": {
+            "value": "[concat('vm', copyIndex(), uniquestring(resourceGroup().id,deployment().name))]"
+          }
+        }
+      },
+      "copy":{
+        "name": "installAzCliLoop",
+        "count": "[variables('numInstances')]"
+      }
+    }      
   ],
   "outputs": {
     "hostname": {
