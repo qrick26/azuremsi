@@ -69,6 +69,20 @@
       "metadata": {
         "description": "The VM SKU"
       }
+    },
+    "_artifactsLocation": {
+      "type": "string",
+      "metadata": {
+          "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+      },
+      "defaultValue": "https://raw.githubusercontent.com/qrick26/azuremsi/master/linuxmsi"
+    },
+    "_artifactsLocationSasToken": {
+        "type": "securestring",
+        "metadata": {
+            "description": "The sasToken required to access _artifactsLocation."
+        },
+        "defaultValue": ""
     }
   },
   "variables": {
@@ -136,7 +150,30 @@
             },
             "protectedSettings": {}
         }
-    } 
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('vmName'),'/installAzCli')]",
+      "apiVersion": "[variables('computeAPIVersion')]",
+      "location": "[parameters('Location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', parameters('vmName'))]"
+      ],
+      "properties": {
+          "publisher": "Microsoft.Azure.Extensions",
+          "type": "CustomScript",
+          "typeHandlerVersion": "2.0",
+          "autoUpgradeMinorVersion": true,
+          "settings": {
+              "fileUris": [
+                  "[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/scripts/install-az-cli.sh', parameters('_artifactsLocationSasToken'))]"
+              ]
+          },
+          "protectedSettings": {
+            "commandToExecute": "./install-az-cli.sh"
+          }
+      }
+    }
   ],
   "outputs": {
      "principalId": {

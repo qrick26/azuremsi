@@ -283,6 +283,12 @@
           },
           "SKU": {
             "value": "[parameters('SKU')]"
+          },
+          "_artifactsLocation":{
+            "value": "[parameters('_artifactsLocation')]"
+          },
+          "_artifactsLocationSasToken":{
+            "value": "[parameters('_artifactsLocationSasToken')]"
           }
         }
       },
