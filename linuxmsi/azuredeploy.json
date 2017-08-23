@@ -302,7 +302,7 @@
       "name": "creatingRBAC",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('deploymentApiVersion')]",
-      "dependsOn": ["installAzCliLoop"],
+      "dependsOn": ["azCliLoop"],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -451,7 +451,7 @@
         }
       },
       "copy":{
-        "name": "installAzCliLoop",
+        "name": "azCliLoop",
         "count": "[variables('numInstances')]"
       }
     }      

@@ -36,7 +36,7 @@
     "resources": [
         {
           "type": "Microsoft.Compute/virtualMachines/extensions",
-          "name": "[concat(parameters('vmName'),'/installAzCli')]",
+          "name": "[concat(parameters('vmName'),'/azCliExt')]",
           "apiVersion": "[variables('computeAPIVersion')]",
           "location": "[parameters('Location')]",
           "properties": {
