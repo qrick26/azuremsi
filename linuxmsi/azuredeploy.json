@@ -302,7 +302,7 @@
       "name": "creatingRBAC",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('deploymentApiVersion')]",
-      "dependsOn": ["installAzCliLoop"],
+      "dependsOn": ["vmLoop"],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -334,12 +334,11 @@
           "autoUpgradeMinorVersion": true,
           "settings": {
               "fileUris": [
-                  "[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/scripts/writeblob.sh', parameters('_artifactsLocationSasToken'))]",
-                  "[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/scripts/install-and-run-cli-2.sh', parameters('_artifactsLocationSasToken'))]"
+                  "[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/scripts/install-azcli-genkey.sh', parameters('_artifactsLocationSasToken'))]"
               ]
           },
           "protectedSettings": {
-            "commandToExecute": "[concat('./install-and-run-cli-2.sh -i \"', parameters('azureCLI2DockerImage'),'\" -s \"', subscription().subscriptionId, '\" -a \"', variables('storageAccountName'), '\" -c \"', variables('containerName'), '\" -r \"', resourceGroup().Name, '\" -v \"', variables('keyVaultName'), '\" -k \"', variables('sshKeyName'), '\"')]"
+            "commandToExecute": "[concat('./install-azcli-genkey.sh -s \"', subscription().subscriptionId, '\" -r \"', resourceGroup().Name, '\" -v \"', variables('keyVaultName'), '\" -k \"', variables('sshKeyName'), '\"')]"
           }
       }
     },
@@ -432,29 +431,7 @@
           }
         }
       }
-    },
-    {
-      "name": "[concat('installAzCli', copyIndex())]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "[variables('deploymentApiVersion')]",
-      "dependsOn": ["vmLoop"],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[variables('installAzCliUrl')]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "vmName": {
-            "value": "[concat('vm', copyIndex(), uniquestring(resourceGroup().id,deployment().name))]"
-          }
-        }
-      },
-      "copy":{
-        "name": "installAzCliLoop",
-        "count": "[variables('numInstances')]"
-      }
-    }      
+    }
   ],
   "outputs": {
     "hostname": {

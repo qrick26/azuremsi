@@ -62,9 +62,7 @@
     }
   },
   "variables": {
-      "computeAPIVersion":"2017-03-30",
-      "containerName":"msi",
-      "scriptName":"writekey.sh"
+      "computeAPIVersion":"2017-03-30"
   },
   "resources": [
     {
@@ -79,8 +77,7 @@
           "autoUpgradeMinorVersion": true,
           "settings": {
               "fileUris": [
-                  "[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/scripts/writekey.sh', parameters('_artifactsLocationSasToken'))]",
-                  "[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/scripts/install-and-run-cli-2.sh', parameters('_artifactsLocationSasToken'))]"
+                  "[concat(substring(parameters('_artifactsLocation'),0,lastIndexof(parameters('_artifactsLocation'),'/')), '/scripts/writekey.sh', parameters('_artifactsLocationSasToken'))]"
               ]
           },
           "protectedSettings": {
