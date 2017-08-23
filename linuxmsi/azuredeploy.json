@@ -302,7 +302,7 @@
       "name": "creatingRBAC",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables('deploymentApiVersion')]",
-      "dependsOn": ["Microsoft.Resources/deployments/installAzCli"],
+      "dependsOn": ["installAzCliLoop"],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
